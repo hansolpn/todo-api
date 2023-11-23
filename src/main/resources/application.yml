@@ -1,0 +1,23 @@
+server:
+  port: 8181
+
+spring:
+  datasource:
+    url: jdbc:mysql://localhost:3306/jpa?serverTimezone=Asia/Seoul
+    username: spring
+    password: spring
+    driver-class-name: com.mysql.cj.jdbc.Driver
+  jpa:
+    # 방언 설정 -> 각 DB에 맞는 쿼리를 설정
+    database-platform: org.hibernate.dialect.MySQL8Dialect
+    hibernate:
+      ddl-auto: create # 자동 DDL 설정 옵션 -> create로 설정하면 클래스 모양대로 테이블 자동 생성
+    database: mysql # DB 계열 설정
+
+logging.level:
+  org.hibernate.SQL: debug
+
+# swagger setting
+springdoc:
+  swagger-ui:
+    path: /myapi.html
