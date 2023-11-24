@@ -17,6 +17,7 @@ import javax.servlet.http.HttpServletRequest;
 @Slf4j
 @RequiredArgsConstructor
 @RequestMapping("/api/todos")
+@CrossOrigin
 public class TodoController {
     private final TodoService todoService;
 
