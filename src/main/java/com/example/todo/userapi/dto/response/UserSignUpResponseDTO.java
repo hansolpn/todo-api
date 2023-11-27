@@ -1,4 +1,4 @@
-package com.example.todo.userapi.dto;
+package com.example.todo.userapi.dto.response;
 
 import com.example.todo.userapi.entity.User;
 import com.fasterxml.jackson.annotation.JsonFormat;
@@ -21,7 +21,7 @@ public class UserSignUpResponseDTO {
     private LocalDateTime joinDate;
 
     public UserSignUpResponseDTO(User user) {
-        this.email = user.getUserName();
+        this.email = user.getEmail();
         this.userName = user.getUserName();
         this.joinDate = user.getJoinDate();
     }
