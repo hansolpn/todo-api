@@ -8,7 +8,7 @@ import org.hibernate.annotations.GenericGenerator;
 import javax.persistence.*;
 import java.time.LocalDateTime;
 
-@Getter @Setter
+@Getter
 @ToString @EqualsAndHashCode(of = "id")
 @AllArgsConstructor
 @NoArgsConstructor
@@ -38,4 +38,9 @@ public class User {
     //@ColumnDefault("'COMMON'")
     @Builder.Default
     private Role role = Role.COMMON;
+
+    // 등급 수정 메서트
+    public void changeRole(Role role) {
+        this.role = role;
+    }
 }
