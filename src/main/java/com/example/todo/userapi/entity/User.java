@@ -38,6 +38,8 @@ public class User {
     //@ColumnDefault("'COMMON'")
     @Builder.Default
     private Role role = Role.COMMON;
+    
+    private String profileImg; // 프로필 이미지 경로
 
     // 등급 수정 메서트
     public void changeRole(Role role) {
