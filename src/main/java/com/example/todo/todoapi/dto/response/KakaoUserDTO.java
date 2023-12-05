@@ -1,11 +1,13 @@
 package com.example.todo.todoapi.dto.response;
 
+import com.example.todo.userapi.entity.User;
 import com.fasterxml.jackson.annotation.JsonProperty;
 import lombok.Getter;
 import lombok.Setter;
 import lombok.ToString;
 
 import java.time.LocalDateTime;
+import java.util.UUID;
 
 @Getter @Setter
 @ToString
@@ -20,7 +22,7 @@ public class KakaoUserDTO {
 
     @Setter @Getter
     @ToString
-    private static class KakaoAcount {
+    public static class KakaoAcount {
         private String email;
 
         private Profile profile;
@@ -32,5 +34,15 @@ public class KakaoUserDTO {
             @JsonProperty("profile_image_url")
             private String profileImageUrl;
         }
+    }
+
+    public User toEntity(String accessToken) {
+        return User.builder()
+                .email(this.kakaoAccount.email)
+                .userName(this.kakaoAccount.profile.nickname)
+                .password(UUID.randomUUID().toString())
+                .profileImg(this.kakaoAccount.profile.profileImageUrl)
+                .accessToken(accessToken)
+                .build();
     }
 }

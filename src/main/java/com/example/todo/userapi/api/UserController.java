@@ -6,6 +6,7 @@ import com.example.todo.userapi.dto.request.LoginRequestDTO;
 import com.example.todo.userapi.dto.request.UserRequestSignUpDTO;
 import com.example.todo.userapi.dto.response.LoginResponseDTO;
 import com.example.todo.userapi.dto.response.UserSignUpResponseDTO;
+import com.example.todo.userapi.entity.User;
 import com.example.todo.userapi.service.UserService;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
@@ -141,6 +142,7 @@ public class UserController {
 
     // 프로필 사진 이미지 데이터를 클라이언트에게 응답 처리
     @GetMapping("/load-profile")
+    @CrossOrigin(exposedHeaders = "kakaoProfile")
     public ResponseEntity<?> loadFile(
             @AuthenticationPrincipal TokenUserInfo userInfo
     ) {
@@ -150,6 +152,14 @@ public class UserController {
             // 클라이언트가 요청한 프로필 사진을 응답해야 함
             // 1. 프로필 사진의 경로부터 얻어야 한다!
             String filePath = userService.findProfilePath(userInfo.getUserId());
+
+            // 카카오 프로필 사진은 http로 시작되므로 http로 시작하면 따로 처리
+            if (filePath != null && filePath.startsWith("http")) {
+                return ResponseEntity.ok()
+                        //.header("Access-Control-Expose-Headers", "kakao")
+                        .header("kakaoProfile", "true")
+                        .body(filePath);
+            }
 
             // 2. 얻어낸 파일 경로를 통해 실제 파일 데이터를 로드하기
             File profileFile = new File(filePath);
@@ -207,8 +217,26 @@ public class UserController {
     @GetMapping("/kakaoLogin")
     public ResponseEntity<?> kakaoLogin(String code) {
         log.info("/api/auth/kakaoLogin - GET! - code: {}", code);
-        userService.kakaoService(code);
-        return null;
+
+        try {
+            LoginResponseDTO responseDTO = userService.kakaoService(code);
+            return ResponseEntity.ok().body(responseDTO);
+        } catch (Exception e) {
+            log.warn(e.getMessage(), e);
+            return ResponseEntity.internalServerError().body(e.getMessage());
+        }
+
+    }
+
+    @GetMapping("/logout")
+    public ResponseEntity<?> logout(
+            @AuthenticationPrincipal TokenUserInfo userInfo
+    ) {
+        log.info("/api/auth/logout - GET! - user: {}", userInfo.getEmail());
+
+        String result = userService.logout(userInfo);
+
+        return ResponseEntity.ok().body(result);
     }
 
 }
