@@ -2,6 +2,8 @@ package com.example.todo.todoapi.filter;
 
 import com.example.todo.auth.TokenProvider;
 import com.example.todo.auth.TokenUserInfo;
+import io.jsonwebtoken.ExpiredJwtException;
+import io.jsonwebtoken.JwtException;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.security.authentication.AbstractAuthenticationToken;
@@ -64,7 +66,11 @@ public class JwtAuthFilter extends OncePerRequestFilter {
                 // 스프링 시큐리티 컨테이너에 인증 정보 객체 등록
                 SecurityContextHolder.getContext().setAuthentication(auth);
             }
-        } catch (Exception e) {
+        } catch (ExpiredJwtException e) {
+            log.warn("토큰의 기한이 만료되었습니다.");
+            throw new JwtException("토큰 기한 만료");
+        }
+        catch (Exception e) {
             log.info("서명이 일치하지 않습니다! 토큰이 위조되었습니다", e);
         }
 
